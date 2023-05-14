@@ -8,7 +8,7 @@ import {
   InputLeftElement,
   SkeletonText,
 } from "@chakra-ui/react";
-import { FaTimes, FaMapMarkerAlt, FaCircle, FaPlus } from "react-icons/fa";
+import { FaTimes, FaMapMarkerAlt, FaCircle, FaPlus, FaMinus, FaPlusCircle, FaMinusCircle } from "react-icons/fa";
 
 import {} from "react-icons";
 import "./main.css";
@@ -37,6 +37,7 @@ function Main() {
   const waypointsInputRefs = useRef([]);
   const [error, setError] = useState("");
   const [formErrors, setFormErrors] = useState({});
+  const [stop1,setStop1]=useState([]);
   let errorObj = {};
   /** @type React.MutableRefObject<HTMLInputElement> */
   const originRef = useRef();
@@ -60,6 +61,15 @@ function Main() {
     e.preventDefault();
     setInputs([...inputs, ""]);
     console.log(inputs);
+  }
+  const handleStopChange=(e)=>{
+    setInputs(e.target.value)
+  }
+  function removeInput(index) {
+    const newInputs = [...inputs];
+    newInputs.splice(index, 1);
+    setInputs(newInputs);
+    console.log(newInputs);
   }
   async function calculateRoute() {
     try {
@@ -127,7 +137,9 @@ function Main() {
       setDirectionsResponse(results);
       setDistance(`${(totalDistance / 1000).toFixed(0)} km`);
     } catch (error) {
-      alert(" You chose a location that is not suggested by google or the fields are empty");
+      alert(
+        " You chose a location that is not suggested by google or the fields are empty"
+      );
       // alert(error);
       setError(true);
     }
@@ -180,7 +192,25 @@ function Main() {
                 <Heading as="h6" size="xs" className="heading">
                   Stops
                 </Heading>
-                <div className="field">
+                <div className="field" >
+                  <Autocomplete>
+                    <InputGroup>
+                      <Input
+                        className="stop-field"
+                        type="text"
+                        background={"#FFFF"}
+                        placeholder="Stops"
+
+                        ref={
+                          waypointsInputRefs
+                        }
+                      />
+                      <InputLeftElement
+                        pointerEvents="none"
+                        children={<FaCircle size={15} color="black" />}
+                      />
+                    </InputGroup>
+                  </Autocomplete>
                   {inputs.map((input, index) => (
                     <div key={index} className="stop-field">
                       <Autocomplete>
@@ -190,9 +220,10 @@ function Main() {
                             background={"#FFFF"}
                             placeholder="Stops"
                             value={input}
-                            ref={(element) =>
-                              waypointsInputRefs.current.push(element)
-                            }
+                            onClick={e=>handleInputChange(e)}
+                            // ref={(element) =>
+                            //   waypointsInputRefs.current.push(element)
+                            // }
                             onChange={(e) => {
                               handleInputChange(e, index);
                             }}
@@ -205,11 +236,16 @@ function Main() {
                       </Autocomplete>
                     </div>
                   ))}
+                  <div className="buttons" style={{display:"flex",justifyContent:"center"}}>
                   <button type="click" onClick={addInput} id="addButton">
-                    <FaPlus size={10} /> Add another stop
+                    <FaPlusCircle size={10} /> Add another stop
                   </button>
+                  <button type="click" onClick={removeInput} id="addButton">
+                    <FaMinusCircle size={10} /> Remove 
+                  </button>
+                  </div>
                 </div>
-                <Heading as="h6" size="xs" className="heading">
+                <Heading as="h6" size="xs" className="heading" >
                   Destination
                 </Heading>
                 <div className="field">
@@ -249,24 +285,23 @@ function Main() {
                       {formErrors === "{}" ? alert("An error occured") : ""}
                     </Button>
                   </div>
-                  <div className="calcButton-2">
+                  <div
+                    className="calcButton-2"
+                    style={{ display: "flex", alignItems: "center" }}
+                  >
                     <IconButton
                       aria-label="center back"
                       borderRadius={"50%"}
-                      background={"transparent"}
+                      background={"#1b31a8"}
                       alignItems={"center"}
-                      position={"relative"}
-                      _hover={{ border: "2px solid black" }}
+                      // position={"relative"}
                       icon={<FaTimes color="white" />}
                       onClick={clearRoute}
                     />
                   </div>
                 </ButtonGroup>
               </div>
-              {/* ***click on <b>X</b> to clear */}
             </div>
-            {/* </div> */}
-            {/* </div> */}
             <div className="distance">
               <div className="distance-number">
                 <div className="text-distance">
@@ -281,6 +316,7 @@ function Main() {
                       fontSize: "3rem",
                       fontWeight: "900",
                     }}
+                    id="distance-heading"
                   >
                     {distance ? `${distance}s` : ""}
                   </h1>

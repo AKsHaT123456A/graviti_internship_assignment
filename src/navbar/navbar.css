@@ -1,13 +1,13 @@
 .container{
     width: 100vw;
-    height: 10vh;
+    height: 11vh;
 }
 .logo {
   position: absolute;
   width: 160px;
   height: 69px;
   left: 67px;
-  top: 6px;
+  top: 0;
   display: block;
   background: url(".././assests/graviti.png");
 }
