@@ -1,0 +1,13 @@
+.container{
+    width: 100vw;
+    height: 10vh;
+}
+.logo {
+  position: absolute;
+  width: 160px;
+  height: 69px;
+  left: 67px;
+  top: 6px;
+  display: block;
+  background: url(".././assests/graviti.png");
+}
