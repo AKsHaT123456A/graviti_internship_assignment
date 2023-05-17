@@ -76,6 +76,7 @@
   color: #1b31a8;
 }
 .field {
+  margin-top:0.5rem;
   margin-bottom: 2rem;
 }
 #addButton {

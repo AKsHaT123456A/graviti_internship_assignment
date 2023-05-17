@@ -18,9 +18,9 @@ import {
   FaPlusCircle,
   FaMinusCircle,
 } from "react-icons/fa";
-import  LOGO from "../assests/ellipse.png" 
-import  LOGO2 from "../assests/room.png" 
-import  LOGO1 from "../assests/e20.png" 
+import LOGO from "../assests/ellipse.png";
+import LOGO2 from "../assests/room.png";
+import LOGO1 from "../assests/e20.png";
 import {} from "react-icons";
 import "./main.css";
 import {
@@ -37,33 +37,33 @@ function Main() {
     libraries: ["places"],
     region: "IN",
   });
-  const waypointsInputRefs=useRef([]);
+  const waypointsInputRefs = useRef([]);
   const [map, setMap] = useState(/** @type google.maps.Map */ (null));
-  const [searchResult, setSearchResult] = useState('')
+  const [searchResult, setSearchResult] = useState("");
   const [directionsResponse, setDirectionsResponse] = useState(null);
   const [distance, setDistance] = useState("");
   const [duration, setDuration] = useState("");
-  const [indexes,setIndexes]=useState();
+  const [indexes, setIndexes] = useState();
   const [originVal, setOriginVal] = useState("");
   const [destinationVal, setDestinationVal] = useState("");
   const [inputs, setInputs] = useState([""]);
   const [stops, setStops] = useState([]);
-  const [error,setError] = useState("");
-  const [stops1,setStops1] = useState([]);
-  const [waypoints,setWaypoints] = useState([]);
+  const [error, setError] = useState("");
+  const [stops1, setStops1] = useState([]);
+  const [waypoints, setWaypoints] = useState([]);
   const [formErrors, setFormErrors] = useState({});
   const [check, setcheck] = useState(false);
   const [stopCopy, setStopCopy] = useState();
-  let stops1Copy=[];
-  useEffect(()=>{
+  let stops1Copy = [];
+  useEffect(() => {
     setStopCopy(stops);
     console.log(stops);
-  },[check,stops]);
+  }, [check, stops]);
 
   let errorObj = {};
   /** @type React.MutableRefObject<HTMLInputElement> */
   const originRef = useRef();
-  const stopRef=useRef();
+  const stopRef = useRef();
   /** @type React.MutableRefObject<HTMLInputElement> */
   const destinationRef = useRef();
   if (!isLoaded) {
@@ -94,11 +94,11 @@ function Main() {
   function onPlaceChanged() {
     if (searchResult != null) {
       setcheck(true);
-      const place = searchResult.getPlace(); 
+      const place = searchResult.getPlace();
       const name = place.name;
-      setStops([...stops,name]);
-      stops1Copy=stops;
-      stopCopy[indexes]=name;
+      setStops([...stops, name]);
+      stops1Copy = stops;
+      stopCopy[indexes] = name;
       console.log(`Name: ${name}`);
       setStops1(stops1Copy);
       console.log(stops1);
@@ -137,6 +137,7 @@ function Main() {
       const waypoints = stops.map((stop) => ({
         location: stop,
         stopover: true,
+        // icon: LOGO,
       }));
       // eslint-disable-next-line no-undef
       const directionsService = new google.maps.DirectionsService();
@@ -147,7 +148,36 @@ function Main() {
         // eslint-disable-next-line no-undef
         travelMode: google.maps.TravelMode.DRIVING,
       });
-      
+      // eslint-disable-next-line no-undef
+      new google.maps.Marker({
+        position: results.routes[0].legs[0].start_location,
+        map: map,
+        icon: LOGO,
+      });
+      // eslint-disable-next-line no-undef
+      new google.maps.Marker({
+        position:
+          results.routes[0].legs[results.routes[0].legs.length - 1]
+            .end_location,
+        map: map,
+        icon: {
+          url: LOGO1,
+          // eslint-disable-next-line no-undef
+          scaledSize: new google.maps.Size(30, 30),
+        },
+      });
+    // Create markers for waypoints with custom icons
+      // eslint-disable-next-line no-undef
+      // new google.maps.Marker({
+      //   position: stops[0],
+      //   map: map,
+      //   icon: {
+      //     url: "../assets/ellipse.png", // URL of the custom marker image
+      //     // eslint-disable-next-line no-undef
+      //     scaledSize: new google.maps.Size(30, 30), // Adjust the size as needed
+      //   },
+      // });
+
       let totalDistance = 0;
       for (let i = 0; i < results.routes[0].legs.length; i++) {
         totalDistance += results.routes[0].legs[i].distance.value;
@@ -172,7 +202,8 @@ function Main() {
       setDirectionsResponse(results);
       setDistance(`${(totalDistance / 1000).toFixed(0)} km`);
     } catch (error) {
-      alert(
+      console.log(error);
+      alert( 
         " You chose a location that is not suggested by google or the fields are empty"
       );
       // alert(error);
@@ -218,10 +249,10 @@ function Main() {
                         onChange={(e) => handleOriginChange(e)}
                       />
                       <InputLeftElement pointerEvents={"none"}>
-                      <img src={LOGO} alt="logo" width={15} height={15} />
+                        <img src={LOGO} alt="logo" width={15} height={15} />
                       </InputLeftElement>
                     </InputGroup>
-                  </Autocomplete >
+                  </Autocomplete>
                 </div>
                 <Heading as="h6" size="xs" className="heading">
                   Stops
@@ -229,7 +260,11 @@ function Main() {
                 <div className="field">
                   {inputs.map((input, index) => (
                     <div key={index} className="stop-field">
-                      <Autocomplete onPlaceChanged={onPlaceChanged} onLoad={onLoad} onClick={e=>setIndexes(index)}>
+                      <Autocomplete
+                        onPlaceChanged={onPlaceChanged}
+                        onLoad={onLoad}
+                        onClick={(e) => setIndexes(index)}
+                      >
                         <InputGroup>
                           <Input
                             type="text"
@@ -286,8 +321,9 @@ function Main() {
                       <InputLeftElement
                         pointerEvents="none"
                         children={<FaMapMarkerAlt />}
-                      /> <InputLeftElement pointerEvents={"none"}>
-                      <img src={LOGO2} alt="logo" width={15} height={15} />
+                      />{" "}
+                      <InputLeftElement pointerEvents={"none"}>
+                        <img src={LOGO2} alt="logo" width={15} height={15} />
                       </InputLeftElement>
                     </InputGroup>
                   </Autocomplete>
@@ -298,7 +334,15 @@ function Main() {
                 <ButtonGroup>
                   <div className="calcButton-1">
                     <Button
-                     _hover={{ border: "none", outline: "none", boxShadow: "none" }}
+                      _hover={{
+                        border: "none",
+                        outline: "none",
+                        boxShadow: "none",
+                      }}
+                      style={{
+                        position:"relative",
+                        top:"-0.4rem"
+                      }}
                       colorScheme="#1B31A8"
                       type="submit"
                       onClick={calculateRoute}
@@ -309,7 +353,12 @@ function Main() {
                   </div>
                   <div
                     className="calcButton-2"
-                    style={{ display: "flex", alignItems: "center" ,position:"relative", top:"1rem"}}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      position: "relative",
+                      top: "0.1rem",
+                    }}
                   >
                     <IconButton
                       aria-label="center back"
@@ -317,8 +366,8 @@ function Main() {
                       background={"#1b31a8"}
                       alignItems={"center"}
                       position={"relative"}
-                      top={"-1rem"}
-                      icon={LOGO1}
+                      top={"-0.4rem"}
+                      icon={<FaTimes/>}
                       onClick={clearRoute}
                     />
                   </div>
@@ -345,7 +394,7 @@ function Main() {
                   </h1>
                 </div>
               </div>
-              <div className="distance-sentence" style={{padding:"0.5rem"}}>
+              <div className="distance-sentence" style={{ padding: "0.5rem" }}>
                 {distance ? (
                   `The distance between ${originVal} and ${destinationVal} via the seleted route is ${distance}s and the approximate time of shipping is ${duration}.`
                 ) : (
@@ -376,7 +425,10 @@ function Main() {
                 {directionsResponse && (
                   <DirectionsRenderer
                     directions={directionsResponse}
-                    zoom={8}
+                    zoom={6}
+                    options={{
+                      suppressMarkers: true,
+                    }}
                   />
                 )}
               </GoogleMap>
